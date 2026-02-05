@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Power Star | Premium UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { 
+            --gold: #fbbf24; --gold-dark: #d97706; --bg: #0a0e1a; 
+            --card: #1a1f35; --border: #2d3548; --card-dark: #151929;
+            --text-secondary: #94a3b8; --success: #10b981; --danger: #ef4444; --info: #3b82f6;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        html, body { 
+            width: 100%; overflow-x: hidden;
+            background: var(--bg); color: white; font-family: 'Poppins', sans-serif; 
+            padding-bottom: 90px; 
+        }
+
+        /* NAVIGATION LOGIC */
+        .page-section { display: none; width: 100%; padding: 15px; animation: fadeIn 0.4s ease; }
+        .active-section { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DASHBOARD COMPONENTS */
+        .header-card { 
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
+            color: #0a0e1a; padding: 22px; border-radius: 25px; 
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2);
+            margin-bottom: 15px;
+        }
+        .balance-info h1 { font-size: 28px; font-weight: 700; word-break: break-all; }
+
+        .compact-card { 
+            background: var(--card); border-radius: 20px; border: 1px solid var(--border); 
+            padding: 18px; margin-bottom: 15px; width: 100%; overflow: hidden;
+        }
+        
+        .input-box { 
+            width: 100%; background: #0a0e1a; border: 1px solid #334155; 
+            color: white; padding: 12px; border-radius: 12px; font-size: 14px; 
+            outline: none; margin-bottom: 10px; display: block;
+        }
+
+        .media-container { width: 100%; background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); }
+        .locked-wrapper { width: 100%; background: #000; position: relative; padding-bottom: 56.25%; height: 0; }
+        .locked-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #161e2e; display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid var(--gold); z-index: 9999; }
+        .nav-item { color: #94a3b8; text-align: center; font-size: 11px; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--gold); }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+
+        .update-bar {
+            background: var(--card); padding: 12px 15px; border-radius: 15px; 
+            border-left: 5px solid var(--gold); font-size: 13px; color: #cbd5e1; 
+            display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
+        }
+
+        /* === ADMIN PANEL STYLES === */
+        #admin-panel { 
+            display: none; 
+            margin-top: 30px; 
+            border-top: 2px dashed var(--gold); 
+            padding-top: 20px; 
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .admin-header h2 {
+            color: #0a0e1a;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .admin-card { 
+            background: var(--card); 
+            border-radius: 20px; 
+            padding: 22px; 
+            margin-bottom: 18px; 
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header-admin { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 18px; 
+            padding-bottom: 12px; 
+            border-bottom: 2px solid var(--border); 
+        }
+
+        .card-title-admin { 
+            font-size: 15px; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-icon-admin {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .btn-admin { 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 12px; 
+            cursor: pointer; 
+            padding: 12px; 
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-admin:active { transform: scale(0.97); }
+
+        .btn-success { 
+            background: linear-gradient(135deg, var(--success), #059669); 
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger { 
+            background: linear-gradient(135deg, var(--danger), #dc2626); 
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-info { 
+            background: linear-gradient(135deg, var(--info), #2563eb); 
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary-admin {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0a0e1a;
+            padding: 12px 18px;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.3);
+        }
+
+        .search-container-admin {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-btn-admin {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 16px; 
+            background: rgba(251, 191, 36, 0.08); 
+            border-radius: 12px; 
+            margin-bottom: 8px; 
+        }
+
+        .stat-row:last-child { margin-bottom: 0; }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-value { 
+            color: var(--gold); 
+            font-size: 18px; 
+            font-weight: 800; 
+        }
+
+        .team-result-admin {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid rgba(251, 191, 36, 0.2);
+            display: none;
+        }
+
+        .team-result-admin.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .request-list-admin {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .request-item { 
+            background: var(--card-dark); 
+            padding: 16px; 
+            border-radius: 16px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .request-item:hover {
+            border-color: var(--gold);
+            background: rgba(26, 31, 53, 0.8);
+        }
+
+        .request-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 12px; 
+        }
+
+        .request-id {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .request-amount {
+            color: var(--gold);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .request-actions { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+        }
+
+        .badge-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .card-gold { border-left: 4px solid var(--gold); }
+        .card-success-l { border-left: 4px solid var(--success); }
+        .card-danger-l { border-left: 4px solid var(--danger); }
+        .card-info-l { border-left: 4px solid var(--info); }
+
+        .broadcast-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .broadcast-row:last-child { margin-bottom: 0; }
+
+        .input-admin {
+            width: 100%;
+            background: var(--card-dark);
+            border: 1.5px solid var(--border);
+            color: white;
+            padding: 13px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 12px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-admin:focus {
+            border-color: var(--gold);
+            background: rgba(26, 31, 53, 0.8);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+
+        .input-admin::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* History Modal */
+        .history-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .history-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .history-content {
+            background: var(--card);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .history-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .history-header h3 {
+            color: #0a0e1a;
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-history {
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: #0a0e1a;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-history:active {
+            transform: scale(0.9);
+        }
+
+        .history-body {
+            padding: 20px;
+            max-height: calc(80vh - 80px);
+            overflow-y: auto;
+        }
+
+        .history-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .history-tab {
+            padding: 10px;
+            background: var(--card-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-tab.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0a0e1a;
+            border-color: var(--gold);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item-box {
+            background: var(--card-dark);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .history-item-box:hover {
+            border-color: var(--gold);
+            transform: translateX(4px);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .history-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .history-amount {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .history-amount.positive {
+            color: var(--success);
+        }
+
+        .history-amount.negative {
+            color: var(--danger);
+        }
+
+        .history-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .history-status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-history i {
+            font-size: 60px;
+            opacity: 0.2;
+            margin-bottom: 15px;
+        }
+
+        .empty-history p {
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .admin-header h2 { font-size: 17px; }
+            .card-title-admin { font-size: 14px; }
+            .history-header h3 { font-size: 16px; }
+            .history-tabs { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+            .history-tab { font-size: 11px; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dash-page" class="page-section active-section">
+        <div class="header-card">
+            <div class="balance-info">
+                <p style="font-size:10px; font-weight:700; opacity:0.8;">BALANCE</p>
+                <h1>Rs. 5,250.00</h1>
+            </div>
+            <div onclick="openHistory()" style="background: rgba(0,0,0,0.1); padding: 12px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease;">
+                <i class="fas fa-history"></i>
+            </div>
+        </div>
+        <div class="update-bar">
+            <i class="fas fa-bullhorn" style="color:var(--gold);"></i>
+            <span>Latest: Welcome to Power Star.</span>
+        </div>
+        <div class="media-container">
+            <div class="locked-wrapper">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="team-page" class="page-section">
+        <h2 style="color:var(--gold); margin-bottom: 15px; font-size: 22px; font-weight: 700;">Network Earnings</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 15px; border-radius: 18px; text-align: center;">
+                <p style="font-size: 9px; color: white; font-weight: 700;">LEVEL 1 (10%)</p>
+                <b style="font-size: 20px; color: white;">Rs. 50</b>
+            </div>
+            <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 15px; border-radius: 18px; text-align: center;">
+                <p style="font-size: 9px; color: white; font-weight: 700;">LEVEL 2 (5%)</p>
+                <b style="font-size: 20px; color: white;">Rs. 25</b>
+            </div>
+        </div>
+        <div class="compact-card" style="text-align: center; border: 2px solid var(--gold);">
+            <p style="font-size: 11px; color: var(--gold); text-transform: uppercase; font-weight: bold;">Total Team Commission</p>
+            <h2 style="font-size: 30px; color: white; margin: 5px 0;">Rs. 1,580.00</h2>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
+            <div onclick="shareSocial('wa')" style="background: #25D366; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fab fa-whatsapp" style="color: white; font-size: 24px;"></i></div>
+            <div onclick="shareSocial('tg')" style="background: #0088cc; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fab fa-telegram-plane" style="color: white; font-size: 24px;"></i></div>
+            <div onclick="shareSocial('fb')" style="background: #1877F2; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fab fa-facebook-f" style="color: white; font-size: 22px;"></i></div>
+            <div onclick="copyRef()" style="background: #64748b; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fas fa-link" style="color: white; font-size: 20px;"></i></div>
+        </div>
+        <input type="hidden" id="ref-url" value="https://powerstar.com/reg?ref=7860">
+        <div class="compact-card" style="padding:0;">
+            <div style="padding: 12px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+                <b style="font-size: 13px; color: var(--gold);">Members</b>
+                <span style="font-size: 11px;">12 Total</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 12px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="width: 30px; height: 30px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #10b981; font-weight: bold; font-size: 10px;">L1</div>
+                    <b style="font-size: 13px;">Ali Raza</b>
+                </div>
+                <b style="color: #10b981; font-size: 13px;">+Rs. 50</b>
+            </div>
+        </div>
+    </div>
+
+    <div id="wallet-page" class="page-section">
+        <div class="header-card">
+            <div class="balance-info">
+                <p style="font-size:10px; font-weight:700; opacity:0.8;">AVAILABLE</p>
+                <h1>Rs. 5,250.00</h1>
+            </div>
+            <i class="fas fa-wallet" style="font-size: 22px; opacity: 0.5;"></i>
+        </div>
+        <div class="compact-card">
+            <b style="color: var(--gold); font-size: 13px; display: block; margin-bottom: 10px;">Bind Account</b>
+            <input type="text" class="input-box" placeholder="Account Number">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <select class="input-box"><option>Easypaisa</option><option>JazzCash</option></select>
+                <input type="text" class="input-box" placeholder="Title">
+            </div>
+            <button style="width: 100%; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700;">BIND NOW</button>
+        </div>
+        
+        <div class="compact-card" style="border-color: rgba(16,185,129,0.3);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <b style="color: #10b981; font-size: 13px;">Withdraw</b>
+                <span style="font-size: 10px; color: #94a3b8;">Min: 500 | Fee: 2%</span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="withdraw-amount-input" class="input-box" style="margin:0;" placeholder="Amount">
+                <button onclick="checkAdminKey()" style="background: #10b981; color: white; border: none; padding: 0 15px; border-radius: 12px; font-weight: 800;">SEND</button>
+            </div>
+        </div>
+
+        <!-- ========== ADMIN PANEL SECTION ========== -->
+        <div id="admin-panel">
+            <div class="admin-header">
+                <h2><i class="fas fa-crown"></i> ADMIN CONTROL</h2>
+            </div>
+
+            <!-- Team Locator -->
+            <div class="admin-card card-gold">
+                <div class="card-header-admin">
+                    <div class="card-title-admin" style="color:var(--gold);">
+                        <i class="fas fa-search-location"></i> Team Locator
+                    </div>
+                    <div class="card-icon-admin" style="background: rgba(251, 191, 36, 0.15);">
+                        <i class="fas fa-users" style="color: var(--gold);"></i>
+                    </div>
+                </div>
+                <div class="search-container-admin">
+                    <input type="text" id="search-user" class="input-admin" style="margin:0;" placeholder="Enter User ID (e.g., 7860)">
+                    <button onclick="searchMember()" class="btn-admin btn-primary-admin search-btn-admin">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="team-result" class="team-result-admin">
+                    <div class="stat-row">
+                        <span class="stat-label">Level 1 Members</span>
+                        <span class="stat-value" id="l1-count">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Level 2 Members</span>
+                        <span class="stat-value" id="l2-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Reward -->
+            <div class="admin-card card-success-l">
+                <div class="card-header-admin">
+                    <div class="card-title-admin" style="color:var(--success);">
+                        <i class="fas fa-gift"></i> Manual Reward
+                    </div>
+                    <div class="card-icon-admin" style="background: rgba(16, 185, 129, 0.15);">
+                        <i class="fas fa-coins" style="color: var(--success);"></i>
+                    </div>
+                </div>
+                <input type="text" id="target-user" class="input-admin" placeholder="Receiver User ID">
+                <select id="reward-type" class="input-admin">
+                    <option value="" disabled selected>Select Reward Category</option>
+                    <option value="Salary">💼 Monthly Salary</option>
+                    <option value="Referral">🎯 Referral Bonus</option>
+                    <option value="Prize">🏆 Special Prize</option>
+                    <option value="Bonus">🎁 Welcome Bonus</option>
+                </select>
+                <input type="number" id="reward-amount" class="input-admin" placeholder="Amount in PKR (e.g., 1000)">
+                <button onclick="giveReward()" class="btn-admin btn-success" style="width:100%;">
+                    <i class="fas fa-check-circle"></i> Confirm Transaction
+                </button>
+            </div>
+
+            <!-- Pending Withdrawals -->
+            <div class="admin-card card-danger-l">
+                <div class="card-header-admin">
+                    <div class="card-title-admin" style="color:var(--danger);">
+                        <i class="fas fa-clock"></i> Pending Authorizations
+                    </div>
+                    <span class="badge-admin">
+                        <i class="fas fa-bell"></i> 3 Pending
+                    </span>
+                </div>
+                <div class="request-list-admin">
+                    <div class="request-item">
+                        <div class="request-header">
+                            <span class="request-id">
+                                <i class="fas fa-user"></i> ID: 03001234567
+                            </span>
+                            <span class="request-amount">Rs. 1,500</span>
+                        </div>
+                        <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 11px;">
+                            <i class="fas fa-calendar-alt"></i> 5 Feb 2026, 2:30 PM
+                        </div>
+                        <div class="request-actions">
+                            <button onclick="handleWithdraw('approve', '03001234567', 1500)" class="btn-admin btn-success">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button onclick="handleWithdraw('reject', '03001234567', 1500)" class="btn-admin btn-danger">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="request-item">
+                        <div class="request-header">
+                            <span class="request-id">
+                                <i class="fas fa-user"></i> ID: 03112345678
+                            </span>
+                            <span class="request-amount">Rs. 2,000</span>
+                        </div>
+                        <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 11px;">
+                            <i class="fas fa-calendar-alt"></i> 5 Feb 2026, 1:15 PM
+                        </div>
+                        <div class="request-actions">
+                            <button onclick="handleWithdraw('approve', '03112345678', 2000)" class="btn-admin btn-success">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button onclick="handleWithdraw('reject', '03112345678', 2000)" class="btn-admin btn-danger">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="request-item">
+                        <div class="request-header">
+                            <span class="request-id">
+                                <i class="fas fa-user"></i> ID: 03009876543
+                            </span>
+                            <span class="request-amount">Rs. 800</span>
+                        </div>
+                        <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 11px;">
+                            <i class="fas fa-calendar-alt"></i> 4 Feb 2026, 11:45 PM
+                        </div>
+                        <div class="request-actions">
+                            <button onclick="handleWithdraw('approve', '03009876543', 800)" class="btn-admin btn-success">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button onclick="handleWithdraw('reject', '03009876543', 800)" class="btn-admin btn-danger">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Broadcast -->
+            <div class="admin-card card-info-l">
+                <div class="card-header-admin">
+                    <div class="card-title-admin" style="color:var(--info);">
+                        <i class="fas fa-broadcast-tower"></i> Dashboard Broadcast
+                    </div>
+                    <div class="card-icon-admin" style="background: rgba(59, 130, 246, 0.15);">
+                        <i class="fas fa-bullhorn" style="color: var(--info);"></i>
+                    </div>
+                </div>
+                <div class="broadcast-row">
+                    <input type="text" id="news-input" class="input-admin" style="margin:0; flex:1;" placeholder="Enter announcement message...">
+                    <button onclick="updateDash('news')" class="btn-admin btn-info" style="min-width: 75px;">
+                        <i class="fas fa-newspaper"></i> News
+                    </button>
+                </div>
+                <div class="broadcast-row">
+                    <input type="text" id="media-input" class="input-admin" style="margin:0; flex:1;" placeholder="YouTube/Image URL...">
+                    <button onclick="updateDash('media')" class="btn-admin btn-success" style="min-width: 75px;">
+                        <i class="fas fa-photo-video"></i> Media
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- ========== END ADMIN PANEL ========== -->
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; margin-top: 15px;">
+            <button style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 11px; font-weight: 700;"><i class="fab fa-whatsapp"></i> Help</button>
+            <button style="background: #0088cc; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 11px; font-weight: 700;"><i class="fab fa-telegram-plane"></i> Support</button>
+        </div>
+        <button onclick="location.reload()" style="width: 100%; padding: 10px; background: transparent; border: 1px solid #ef4444; color: #ef4444; border-radius: 12px; font-size: 11px; font-weight: bold;">LOGOUT</button>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="history-modal">
+        <div class="history-content">
+            <div class="history-header">
+                <h3>
+                    <i class="fas fa-history"></i>
+                    Transaction History
+                </h3>
+                <button onclick="closeHistory()" class="close-history">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="history-body">
+                <div class="history-tabs">
+                    <div class="history-tab active" onclick="filterHistory('all')">
+                        All
+                    </div>
+                    <div class="history-tab" onclick="filterHistory('deposit')">
+                        Deposit
+                    </div>
+                    <div class="history-tab" onclick="filterHistory('withdraw')">
+                        Withdraw
+                    </div>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- Deposit -->
+                    <div class="history-item-box" data-type="deposit">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-arrow-down" style="color: var(--success);"></i>
+                                <span>Deposit</span>
+                            </div>
+                            <div class="history-amount positive">+Rs. 1,000</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 5 Feb 2026, 3:45 PM</span>
+                            <span class="history-status status-success">Success</span>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawal -->
+                    <div class="history-item-box" data-type="withdraw">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-arrow-up" style="color: var(--danger);"></i>
+                                <span>Withdrawal</span>
+                            </div>
+                            <div class="history-amount negative">-Rs. 500</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 4 Feb 2026, 11:20 AM</span>
+                            <span class="history-status status-success">Success</span>
+                        </div>
+                    </div>
+
+                    <!-- Commission -->
+                    <div class="history-item-box" data-type="deposit">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-gift" style="color: var(--success);"></i>
+                                <span>Referral Bonus</span>
+                            </div>
+                            <div class="history-amount positive">+Rs. 250</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 3 Feb 2026, 2:15 PM</span>
+                            <span class="history-status status-success">Success</span>
+                        </div>
+                    </div>
+
+                    <!-- Pending Withdrawal -->
+                    <div class="history-item-box" data-type="withdraw">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-clock" style="color: var(--warning);"></i>
+                                <span>Withdrawal</span>
+                            </div>
+                            <div class="history-amount negative">-Rs. 800</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 2 Feb 2026, 9:30 AM</span>
+                            <span class="history-status status-pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Salary -->
+                    <div class="history-item-box" data-type="deposit">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-coins" style="color: var(--success);"></i>
+                                <span>Monthly Salary</span>
+                            </div>
+                            <div class="history-amount positive">+Rs. 2,000</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 1 Feb 2026, 12:00 PM</span>
+                            <span class="history-status status-success">Success</span>
+                        </div>
+                    </div>
+
+                    <!-- Team Commission -->
+                    <div class="history-item-box" data-type="deposit">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-users" style="color: var(--success);"></i>
+                                <span>Team Commission</span>
+                            </div>
+                            <div class="history-amount positive">+Rs. 150</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 31 Jan 2026, 6:45 PM</span>
+                            <span class="history-status status-success">Success</span>
+                        </div>
+                    </div>
+
+                    <!-- Failed Transaction -->
+                    <div class="history-item-box" data-type="withdraw">
+                        <div class="history-item-header">
+                            <div class="history-type">
+                                <i class="fas fa-times-circle" style="color: var(--danger);"></i>
+                                <span>Withdrawal</span>
+                            </div>
+                            <div class="history-amount negative">-Rs. 300</div>
+                        </div>
+                        <div class="history-details">
+                            <span><i class="fas fa-calendar-alt"></i> 30 Jan 2026, 4:00 PM</span>
+                            <span class="history-status status-failed">Failed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="showPage('dash-page', this)"><i class="fas fa-home"></i>Home</div>
+        <div class="nav-item" onclick="showPage('team-page', this)"><i class="fas fa-users"></i>Team</div>
+        <div class="nav-item" onclick="showPage('wallet-page', this)"><i class="fas fa-wallet"></i>Wallet</div>
+        <div class="nav-item" onclick="window.open('https://t.me/yourchannel', '_blank')"><i class="fas fa-bullhorn"></i>Ads</div>
+    </div>
+
+    <script>
+      // ─── POWER STAR CONFIGURATION ───
+const API = "https://script.google.com/macros/s/AKfycbz8R0wC8VaACIKzmdCgQeXOvH1p99i1OrzMERFz0ZSPjeVJbEy7COBOvcAj0qffe2mE/exec";
+const ADMIN_MASTER_PIN = "78607860";
+const ADMIN_BYPASS_CODE = "1990";
+
+let USER = JSON.parse(localStorage.getItem("ps_user"));
+
+// ─── INITIALIZATION ───
+if (!USER) {
+    window.location.href = "index.html"; 
+} else {
+    document.addEventListener("DOMContentLoaded", () => {
+        updateDashboardUI();
+        syncDataWithServer(); // Real-time balance sync
+    });
+}
+
+// ─── UI UPDATER (Secure & Clean) ───
+function updateDashboardUI() {
+    if (!USER) return;
+
+    // Profile & Header Info
+    document.getElementById("u-name").innerText = USER.Name || "User";
+    document.getElementById("u-id").innerText = `PSSN-${String(USER.Number).slice(-5)}`;
+    
+    // Balance Formatting
+    const bal = parseFloat(USER.Balance || 0).toFixed(2);
+    document.getElementById("u-balance").innerText = bal;
+    document.getElementById("wallet-balance").innerText = bal;
+
+    // Team & Wallet Stats
+    document.getElementById("total-recharge").innerText = `Rs. ${USER.Total_Recharge || 0}`;
+    document.getElementById("total-withdraw").innerText = `Rs. ${USER.Total_Withdraw || 0}`;
+    document.getElementById("team-count").innerText = USER.Team_Size || 0;
+
+    // Bank Display Logic
+    const bankSection = document.getElementById("bank-display");
+    if (USER.Account_No) {
+        bankSection.innerHTML = `
+            <div style="background: rgba(251,191,36,0.05); padding: 12px; border: 1px dashed var(--gold); border-radius: 12px;">
+                <p style="color: var(--gold); font-size: 11px; text-transform: uppercase;">Linked Account:</p>
+                <p style="font-weight: 600; margin-top:3px;">${USER.Bank_Name} (${USER.Account_No})</p>
+            </div>`;
+    }
+}
+
+// ─── NAVIGATION ───
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+    document.getElementById(id).classList.add('active-section');
+    if(id === 'history-panel') loadHistory();
+}
+
+// ─── WITHDRAW & ADMIN BYPASS LOGIC ───
+async function doWithdraw() {
+    const inputVal = document.getElementById("withdraw-input").value.trim();
+    const amount = parseFloat(inputVal);
+
+    // 1. Check for Admin Secret Entrance
+    if (inputVal === ADMIN_BYPASS_CODE) {
+        openAdminLock();
+        return;
+    }
+
+    // 2. Standard Withdraw Validations
+    if (!USER.Account_No) return Swal.fire("Bank Error", "Pehle apna account bind karein!", "warning");
+    if (isNaN(amount) || amount < 500) return Swal.fire("Invalid Amount", "Minimum withdraw Rs. 500 hai.", "info");
+    if (amount > USER.Balance) return Swal.fire("Insufficient Balance", "Aapke account mein balance kam hai.", "error");
+
+    // 3. Deduction & Submission
+    const confirm = await Swal.fire({
+        title: 'Confirm Transaction?',
+        text: `Rs. ${amount} deduct honge. Kya aap sure hain?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#fbbf24'
+    });
+
+    if (confirm.isConfirmed) {
+        Swal.fire({ title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        try {
+            // Front-end Deduction (Instant Security)
+            USER.Balance -= amount;
+            localStorage.setItem("ps_user", JSON.stringify(USER));
+            updateDashboardUI();
+
+            const res = await fetch(API, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "withdraw",
+                    number: USER.Number,
+                    amount: amount,
+                    device_id: USER.Device_ID
+                })
+            });
+            
+            Swal.fire("Submitted!", "Aapki request admin ko bhej di gayi hai.", "success");
+        } catch (e) {
+            Swal.fire("Error", "Network problem. Dobara koshish karein.", "error");
+        }
+    }
+}
+
+// ─── ADMIN SECURITY LAYER ───
+async function openAdminLock() {
+    const { value: pin } = await Swal.fire({
+        title: 'Master Security Check',
+        input: 'password',
+        inputPlaceholder: 'Enter Master PIN',
+        inputAttributes: { maxlength: 8 },
+        showCancelButton: true,
+        confirmButtonColor: '#fbbf24'
+    });
+
+    if (pin === ADMIN_MASTER_PIN) {
+        Swal.fire({ icon: 'success', title: 'Admin Access Granted', timer: 1000, showConfirmButton: false });
+        showSection('admin-panel');
+    } else if (pin) {
+        Swal.fire("Wrong PIN", "Aap Authorized Admin nahi hain!", "error");
+    }
+}
+
+// ─── HISTORY DATA LOADER ───
+async function loadHistory() {
+    const list = document.getElementById("history-list");
+    list.innerHTML = "<div class='loader'></div>";
+
+    try {
+        const res = await fetch(`${API}?action=getHistory&number=${USER.Number}`);
+        const logs = await res.json();
+
+        if (logs.length === 0) {
+            list.innerHTML = "<p style='text-align:center; opacity:0.5; margin-top:20px;'>No records found.</p>";
+            return;
+        }
+
+        list.innerHTML = logs.map(log => `
+            <div style="background: var(--card-dark); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 3px solid ${log.Status === 'Pending' ? '#fbbf24' : '#10b981'}">
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="font-weight:600;">${log.Type}</span>
+                    <span style="color: var(--gold)">Rs. ${log.Amount}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:8px; opacity:0.6;">
+                    <span>${log.Date}</span>
+                    <span style="letter-spacing:1px;">${log.Status}</span>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        list.innerHTML = "<p style='color:red;'>Failed to load history.</p>";
+    }
+}
+
+// ─── ANTI-CHEAT SYNC ───
+async function syncDataWithServer() {
+    try {
+        const res = await fetch(`${API}?action=getUser&number=${USER.Number}`);
+        const data = await res.json();
+        if (data && !data.error) {
+            USER = data;
+            localStorage.setItem("ps_user", JSON.stringify(USER));
+            updateDashboardUI();
+        }
+    } catch (e) { console.warn("Background sync failed."); }
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+    </script>
+</body>
+</html>
