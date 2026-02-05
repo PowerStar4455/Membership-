@@ -958,7 +958,7 @@
 
     <script>
       // ─── POWER STAR CONFIGURATION ───
-const API = "https://script.google.com/macros/s/AKfycbz8R0wC8VaACIKzmdCgQeXOvH1p99i1OrzMERFz0ZSPjeVJbEy7COBOvcAj0qffe2mE/exec";
+const API = "https://script.google.com/macros/s/AKfycbwT2x4lYGe59ptWo-i4m7y1Yl7u7_Y2SVzhTR2g04_CzxMRuSBA__-Lv4MpTaYbhZcv/exec";
 const ADMIN_MASTER_PIN = "78607860";
 const ADMIN_BYPASS_CODE = "1990";
 
@@ -966,7 +966,7 @@ let USER = JSON.parse(localStorage.getItem("ps_user"));
 
 // ─── INITIALIZATION ───
 if (!USER) {
-    window.location.href = "index.html"; 
+    window.location.href = "auth.html"; 
 } else {
     document.addEventListener("DOMContentLoaded", () => {
         updateDashboardUI();
